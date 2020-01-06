@@ -1,0 +1,77 @@
+import axios from 'axios';
+import { API} from '../store/actions';
+
+const apiMiddleware = ( dispatch: any ) => (next:any) => (action:any) => {
+    next(action);
+  
+    if (action.type !== API) return;
+  
+    const {
+      url,
+      method,
+      data,
+      onSuccess,
+      onFailure,
+      label,
+      headers
+    } = action.payload;
+    
+    const dataOrParams = ["GET", "DELETE"].includes(method) ? "params" : "data";
+    
+    
+    // axios default configs
+    axios.defaults.baseURL = 'https://jsonplaceholder.typicode.com';//process.env.REACT_APP_BASE_URL;
+    axios.defaults.headers.common["Content-Type"]="application/json";
+    // axios.defaults.headers.common["Authorization"] = `Bearer${token}`;
+  
+    // User for loading label
+    if (label) {
+      next(apiStart(label));
+    }
+  
+    axios
+      .request({
+        url,
+        method,
+        headers,
+        [dataOrParams]: data
+      })
+      .then(({ data }) => {
+        console.log("data received: ", data);
+        next(onSuccess(action.payload.data));
+      })
+      .catch(error => {
+        next(apiError(error));
+        next(onFailure(error));
+
+        // if (error.response && error.response.status === 403) {
+        //   next(accessDenied(window.location.pathname));
+        // }
+      })
+     .finally(() => {
+        // remove loading message
+        if (label) {
+            next(apiEnd(label));
+        }
+     });
+  };
+
+  const apiStart = (label: any) => {
+      return {
+          type: 'API_START'
+      }
+  }
+
+  const apiEnd = (label: any) => {
+    return {
+        type: 'API_END'
+    }
+  }
+
+  const apiError = (error: any) =>{
+      return {
+          type: 'API_ERROR'
+      }
+  }
+
+export default apiMiddleware;

@@ -5,14 +5,23 @@ import PantryList from './pantry/pantryList';
 import UserRegistration from './user/register/userRegistration';
 import NavBar from './nav-bar/navbar';
 
+import apiMiddleware from "./middleware/api";
+
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import reducer from './store/reducer';
+
+const store = createStore(reducer, applyMiddleware(apiMiddleware));
 
 const Routes = () => (
-    <BrowserRouter >
-        <NavBar/>
-        <Route exact path="/" component={App}/>
-        <Route exact path="/pantry" component={PantryList}/>
-        <Route exact path="/register" component={UserRegistration}/>
-    </BrowserRouter>
+    <Provider store={store}>
+        <BrowserRouter >
+            <NavBar/>
+            <Route exact path="/" component={App}/>
+            <Route exact path="/pantry" component={PantryList}/>
+            <Route exact path="/register" component={UserRegistration}/>
+        </BrowserRouter>
+    </Provider>
 );
 
 export default Routes;
