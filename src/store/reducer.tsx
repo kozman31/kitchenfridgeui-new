@@ -1,5 +1,4 @@
 import * as act from './actions';
-import axios from 'axios';
 
 const initialState = {
     loggedIn:false,
@@ -19,7 +18,7 @@ const reducer = (state = initialState, action:{type:string, payload:any}) =>{
 
     switch(action.type){
         case act.LOG_IN: {
-            if(payload.email=='user'){
+            if(payload.email==='user'){
                 return {
                     ...state,
                     navLogin:{

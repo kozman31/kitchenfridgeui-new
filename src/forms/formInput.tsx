@@ -13,36 +13,16 @@ interface option{
 const FormInput: React.FC<any> = (props: any) =>{
     let inputElemant = null;
     let requiredIcon =  null;
-    if (props.required)
+    if (props.elementConfig.required)
         requiredIcon = <FontAwesomeIcon className="small pr-1" icon="star-of-life"></FontAwesomeIcon>;
 
     switch (props.elementType){
         case 'input': {
-            inputElemant = <FormControl
-                                name={props.name}
-                                id={props.name}
-                                type={props.type}
-                                value={props.value}
-                                className="form-control {classes.InputElement}"
-                                onChange={props.onChange}
-                                placeholder={props.placeholder}
-                                children={props.children}
-                                onError={props.error}
-                            />
+            inputElemant = <FormControl className="form-control {classes.inputElemant}" {...props.elementConfig} onChange={props.onChange} value={props.value}/>
             break;
         }
         case 'textArea': {
-            inputElemant = <FormControl
-                                name={props.name}
-                                as={props.elementType}
-                                id={props.id}
-                                value={props.value}
-                                className="form-control {props.className}"
-                                onChange={props.onChange}
-                                placeholder={props.placeholder}
-                                children={props.children}
-                                onError={props.error}
-                            />
+            inputElemant = <FormControl className="form-control {classes.inputElemant}" as={props.elementType} {...props.elementConfig} onChange={props.onChange} value={props.value}/>
             break;
         }
         case 'select': {
@@ -54,9 +34,10 @@ const FormInput: React.FC<any> = (props: any) =>{
                                         </option>
                                     ))}
                                 </FormControl>
+            break;
         }
         default: {
-            inputElemant = <FormControl className="form-control {classes.inputElemant}" {...props.elementConfig} value={props.value}/>
+            inputElemant = <FormControl className="form-control {classes.inputElemant}" {...props.elementConfig} onChange={props.onChange} value={props.value}/>
             break;
         }
     }

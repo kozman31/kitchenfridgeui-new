@@ -21,10 +21,6 @@ import { connect } from 'react-redux';
 
 class PantryList extends React.Component <Props, State>  {
 
-  constructor(props:Props){
-    super(props);
-  }
-
   public render(){
     return (
       <div className="pantry">

@@ -2,7 +2,7 @@ import React, { FormEvent } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {Navbar, Nav, Button, NavDropdown, Form, FormControl} from 'react-bootstrap';
-import {LOG_OUT, API, login}  from '../store/actions';
+import {LOG_OUT, API, loginSuccess}  from '../store/actions';
 
 
 
@@ -37,10 +37,6 @@ class NavBar extends React.Component<Props, {}> {
     }
   }
 
-  constructor(props: Props) {
-    super(props);
-  }
-
   loginHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const loginData = {...this.state.navLogin};
@@ -49,13 +45,19 @@ class NavBar extends React.Component<Props, {}> {
 
   logoutHandler = () =>{
     const updatedNavLogin = {...this.state.navLogin, email:"", password:""};
-    this.setState({navlogin:updatedNavLogin});
+    this.setState({navLogin:updatedNavLogin});
     
   }
 
-  
+  componentDidUpdate(){
+    if(this.props.loggedIn && (this.state.navLogin.email!=="" || this.state.navLogin.password!=="")){
+    const updatedNavLogin = {...this.state.navLogin, email:"", password:""};
+    this.setState({navLogin:updatedNavLogin});
+    }
+  }
 
-  changeHandler = (event: FormEvent<FormControl & HTMLInputElement>, elementId: string) => {
+  changeHandler = (event: FormEvent<FormControl & HTMLInputElement>) => {
+    const elementId = event.currentTarget.name;
     const updatedNavLogin = { ...this.state.navLogin, [elementId]:event.currentTarget.value };
     this.setState({navLogin:updatedNavLogin});
   }
@@ -64,8 +66,8 @@ class NavBar extends React.Component<Props, {}> {
 
     let userDropDown = <NavDropdown alignRight title="Login" id="basic-nav-dropdown">
                         <Form inline onSubmit={this.loginHandler} name="navLogin">
-                            <FormControl type="text" id="email" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event, "email")} value={this.state.navLogin.email} placeholder="Email address" size="sm" className="m-2" />
-                            <FormControl type="password" id="password" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event, "password")} value={this.state.navLogin.password} placeholder="Password" size="sm" className="m-2" />
+                            <FormControl type="text" name="email" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.navLogin.email} placeholder="Email address" size="sm" className="m-2" />
+                            <FormControl type="password" name="password" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.navLogin.password} placeholder="Password" size="sm" className="m-2" />
                             <Button variant="dark" type="submit" size="sm" className="mr-auto ml-auto">Login</Button>
                         </Form>
                         <NavDropdown.Divider/>
@@ -108,12 +110,13 @@ class NavBar extends React.Component<Props, {}> {
 const mapDispatchToProps = (dispatch:any) =>{
   return {
       onLogIn: (loginData:any) => {
+
         dispatch({type: API, payload:{
           url:'/todos/1',
           method:'GET',
           data:{...loginData},
           accessToken:'bearer',
-          onSuccess:login,
+          onSuccess:loginSuccess,
           onFailure:(error:any)=>console.log('Oops, An error occurred.', error),
           label:null,
           headers:null
