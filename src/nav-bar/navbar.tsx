@@ -2,7 +2,7 @@ import React, { FormEvent } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {Navbar, Nav, Button, NavDropdown, Form, FormControl} from 'react-bootstrap';
-import {LOG_OUT, API, loginSuccess}  from '../store/actions';
+import {LOG_OUT, LOG_IN_FAIL, API, loginSuccess}  from '../store/actions';
 
 
 
@@ -112,12 +112,12 @@ const mapDispatchToProps = (dispatch:any) =>{
       onLogIn: (loginData:any) => {
 
         dispatch({type: API, payload:{
-          url:'/todos/1',
+          url:'/user/activate',
           method:'GET',
           data:{...loginData},
           accessToken:'bearer',
           onSuccess:loginSuccess,
-          onFailure:(error:any)=>console.log('Oops, An error occurred.', error),
+          onFailure:(error:any)=>{return({type:LOG_IN_FAIL})},
           label:null,
           headers:null
           }

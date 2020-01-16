@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { API} from '../store/actions';
+import { API } from '../store/actions';
 
+const API_URL = 'http://localhost:8080'
 const apiMiddleware = ( dispatch: any ) => (next:any) => (action:any) => {
     next(action);
   
@@ -20,7 +21,7 @@ const apiMiddleware = ( dispatch: any ) => (next:any) => (action:any) => {
     
     
     // axios default configs
-    axios.defaults.baseURL = 'https://jsonplaceholder.typicode.com';//process.env.REACT_APP_BASE_URL;
+    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
     axios.defaults.headers.common["Content-Type"]="application/json";
     // axios.defaults.headers.common["Authorization"] = `Bearer${token}`;
   
@@ -57,21 +58,16 @@ const apiMiddleware = ( dispatch: any ) => (next:any) => (action:any) => {
   };
 
   const apiStart = (label: any) => {
-      return {
-          type: 'API_START'
-      }
+      return {type: 'API_START'}
   }
 
   const apiEnd = (label: any) => {
-    return {
-        type: 'API_END'
-    }
+    return {type: 'API_END'}
   }
 
   const apiError = (error: any) =>{
-      return {
-          type: 'API_ERROR'
-      }
+    console.log('Oops, An error occurred.', error)
+    return {type: 'API_ERROR'}
   }
 
 export default apiMiddleware;
