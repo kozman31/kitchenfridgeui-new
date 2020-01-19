@@ -1,0 +1,18 @@
+
+  .validTouched:required {
+    border: solid 2px lightgreen;
+    // border-left: 5px solid #42a948; /* green */
+  }
+  
+  .invalidTouched:required{
+    border: solid 2px lightcoral;
+    // border-left: 5px solid #a94442; /* red */
+  }
+  
+  .invalid:required {
+    border-left: 5px solid #a94442; /* red */
+  }
+  
+  .valid:required {
+    border-left: 5px solid #42a948; /* green */
+  }

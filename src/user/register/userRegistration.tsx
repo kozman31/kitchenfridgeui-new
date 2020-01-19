@@ -17,10 +17,13 @@ class UserRegistration extends React.Component<Props,{}>  {
           type: 'text',
           placeholder: 'First Name',
           name:'firstName',
-          required:true,
         },
         value:'',
         label:'First name',
+        touched: false,
+        validation:{
+          required:false,
+        },
       },
       lastName:{
         elementType: 'input',
@@ -28,10 +31,13 @@ class UserRegistration extends React.Component<Props,{}>  {
           type: 'text',
           placeholder: 'Last Name',
           name:'lastName',
-          required:true,
         },
         value:'',
         label:'Last Name',
+        touched: false,
+        validation:{
+          required:false,
+        },
       },
       email:{
         elementType: 'input',
@@ -39,10 +45,19 @@ class UserRegistration extends React.Component<Props,{}>  {
           type: 'email',
           placeholder: 'email@example.com',
           name:'email',
-          required:true,
         },
         value:'',
         label:'Email Address',
+        touched: false,
+        validation:{
+          required:true,
+          rules:[
+            {
+              test: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+              message: "Please enter a valid email address",
+            }
+          ]
+        },
       },
       username:{
         elementType: 'input',
@@ -50,10 +65,23 @@ class UserRegistration extends React.Component<Props,{}>  {
           type: 'text',
           placeholder: 'Username',
           name:'username',
-          required:true,
         },
         value:'',
         label:'Username',
+        touched: false,
+        validation:{
+          required:true,
+          rules:[
+            {
+              test: /^[a-zA-Z0-9-_]+$/,
+              message: "Username must be alpha numeric",
+            },
+            {
+              test: (username:string)=>username!="",
+              message: "Please enter a username",
+            },
+          ]
+        },
       },
       password:{
         elementType: 'input',
@@ -61,10 +89,19 @@ class UserRegistration extends React.Component<Props,{}>  {
           type: 'password',
           placeholder: 'Password',
           name:'password',
-          required:true,
         },
         value:'',
         label:'Password',
+        touched: false,
+        validation:{
+          required:true,
+          rules:[
+            {
+              test: /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/,
+              message: "Please choose a password greater than 8 characters",
+            }
+          ]
+        },
       },
       confirmPassword:{
         elementType: 'input',
@@ -72,10 +109,23 @@ class UserRegistration extends React.Component<Props,{}>  {
           type: 'password',
           placeholder: 'Confirm Password',
           name:'confirmPassword',
-          required:true,
         },
         value:'',
         label:'Confirm Password',
+        touched: false,
+        validation:{
+          required:true,
+          rules:[
+            {
+              test:  /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/,
+              message: "",
+            },
+            {
+              test:  (confirmedPW:string)=>confirmedPW === this.state.form.password.value,
+              message: "Password does not match",
+            }
+          ]
+        },
       },
     },
     onChange:(event:FormEvent<FormControl & HTMLInputElement>)=>this.handleChange(event)
@@ -97,7 +147,7 @@ class UserRegistration extends React.Component<Props,{}>  {
     const elementId = event.currentTarget.name;
     updatedState = { ...this.state.form};
     let updatedElement = updatedState[elementId];
-    updatedElement = {...updatedElement, value: event.currentTarget.value };
+    updatedElement = {...updatedElement, value: event.currentTarget.value, touched:true};
     updatedState = {...updatedState, [elementId]:updatedElement};
     this.setState({form:updatedState});
   }
@@ -117,7 +167,7 @@ class UserRegistration extends React.Component<Props,{}>  {
                 <div className="row">
         { formArray.map((el)=>{
                 return <div key={el.key} className="justify-content-md-center col-6">
-                  <FormInput elementType={el.elementType} onChange={this.state.onChange} elementConfig={el.elementConfig} value={el.value} label={el.label}/>
+                  <FormInput elementType={el.elementType} onChange={this.state.onChange} validation={el.validation} touched={el.touched} elementConfig={el.elementConfig} value={el.value} label={el.label}/>
                   </div>
           })
         }
