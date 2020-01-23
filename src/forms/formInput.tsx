@@ -48,7 +48,7 @@ const FormInput: React.FC<any> = (props: any) =>{
                     else
                         classes.push('invalid');
             }
-            
+            return null;
         })
     }
 

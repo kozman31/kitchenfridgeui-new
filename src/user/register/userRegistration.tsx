@@ -1,6 +1,6 @@
 import React, { FormEvent } from 'react';
 import FormInput from '../../forms/formInput';
-import {API, loginSuccess}  from '../../store/actions';
+import {API, registerSuccess}  from '../../store/actions';
 import { FormControl } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
@@ -53,7 +53,7 @@ class UserRegistration extends React.Component<Props,{}>  {
           required:true,
           rules:[
             {
-              test: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+              test: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
               message: "Please enter a valid email address",
             }
           ]
@@ -77,7 +77,7 @@ class UserRegistration extends React.Component<Props,{}>  {
               message: "Username must be alpha numeric",
             },
             {
-              test: (username:string)=>username!="",
+              test: (username:string)=>username!=="",
               message: "Please enter a username",
             },
           ]
@@ -153,7 +153,7 @@ class UserRegistration extends React.Component<Props,{}>  {
   }
 
   public render(){
-    const registrationForm = true;
+    
     const formObj: {[index:string]:any}= { ...this.state.form};
     // formObj = { ...this.state.form};
     const formArray=[];
@@ -199,11 +199,11 @@ const mapDispatchToProps = (dispatch:any) =>{
     registerUser: (loginData:any) => {
 
         dispatch({type: API, payload:{
-          url:'/todos/1',
-          method:'GET',
+          url:'/register',
+          method:'POST',
           data:{...loginData},
-          accessToken:'bearer',
-          onSuccess:loginSuccess,
+          accessToken:'',
+          onSuccess:registerSuccess,
           onFailure:(error:any)=>console.log('Oops, An error occurred.', error),
           label:null,
           headers:null

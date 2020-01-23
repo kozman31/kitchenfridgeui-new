@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 
   export interface Props {
-    loggedIn: string;
+    loggedIn: boolean;
     user: {
       email:string,
       username:string,
@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
     };
   }
   export interface State {
-    loggedIn: string;
+    loggedIn: boolean;
     user: {
       email:string,
       username:string,
@@ -27,7 +27,7 @@ class PantryList extends React.Component <Props, State>  {
         <h2>Pantry</h2>
         <h4>Under Contruction</h4>
         <h5>Logged In?: {this.props.loggedIn.toString()}</h5>
-        <h5>User: {this.props.user.email}</h5>
+        <h5>User: {this.props.user.username}</h5>
       </div>
     );
   }

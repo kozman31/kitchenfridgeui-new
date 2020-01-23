@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { API } from '../store/actions';
 
-const API_URL = 'http://localhost:8080'
 const apiMiddleware = ( dispatch: any ) => (next:any) => (action:any) => {
     next(action);
   
@@ -37,9 +36,9 @@ const apiMiddleware = ( dispatch: any ) => (next:any) => (action:any) => {
         headers,
         [dataOrParams]: data
       })
-      .then(({ data }) => {
-        console.log("data received: ", data);
-        next(onSuccess(action.payload.data));
+      .then((response) => {
+        console.log("data received: ", response);
+        next(onSuccess(response));
       })
       .catch(error => {
         next(apiError(error));

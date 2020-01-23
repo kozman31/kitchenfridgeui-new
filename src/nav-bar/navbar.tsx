@@ -2,37 +2,36 @@ import React, { FormEvent } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {Navbar, Nav, Button, NavDropdown, Form, FormControl} from 'react-bootstrap';
-import {LOG_OUT, LOG_IN_FAIL, API, loginSuccess}  from '../store/actions';
-
+import {LOG_IN_FAIL, API, loginSuccess, logOut}  from '../store/actions';
 
 
   export interface Props {
     onLogIn: (loginData:any) => void;
     onLogOut: () => void;
     user: {
-      username:String,
-      email: String
+      username:string,
+      roles: [],
     };
-    loggedIn:Boolean;
+    loggedIn:boolean;
   }
 
   export interface State {
     navLogin:{
-      email:"",
+      username:"",
       password:""
     },
     user: {
-      username:String,
-      email: String
+      username:string,
+      roles: [],
     }
-    loggedIn:false
+    loggedIn:boolean
   }
 
 class NavBar extends React.Component<Props, {}> {
 
   state = {
     navLogin:{
-      email:"",
+      username:"",
       password:""
     }
   }
@@ -44,14 +43,15 @@ class NavBar extends React.Component<Props, {}> {
   }
 
   logoutHandler = () =>{
-    const updatedNavLogin = {...this.state.navLogin, email:"", password:""};
+    const updatedNavLogin = {...this.state.navLogin, username:"", password:""};
     this.setState({navLogin:updatedNavLogin});
+    this.props.onLogOut();
     
   }
 
   componentDidUpdate(){
-    if(this.props.loggedIn && (this.state.navLogin.email!=="" || this.state.navLogin.password!=="")){
-    const updatedNavLogin = {...this.state.navLogin, email:"", password:""};
+    if(this.props.loggedIn && (this.state.navLogin.username!=="" || this.state.navLogin.password!=="")){
+    const updatedNavLogin = {...this.state.navLogin, username:"", password:""};
     this.setState({navLogin:updatedNavLogin});
     }
   }
@@ -63,21 +63,19 @@ class NavBar extends React.Component<Props, {}> {
   }
 
   public render(){
-
     let userDropDown = <NavDropdown alignRight title="Login" id="basic-nav-dropdown">
                         <Form inline onSubmit={this.loginHandler} name="navLogin">
-                            <FormControl type="text" name="email" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.navLogin.email} placeholder="Email address" size="sm" className="m-2" />
+                            <FormControl type="text" name="username" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.navLogin.username} placeholder="Username" size="sm" className="m-2" />
                             <FormControl type="password" name="password" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.navLogin.password} placeholder="Password" size="sm" className="m-2" />
                             <Button variant="dark" type="submit" size="sm" className="mr-auto ml-auto">Login</Button>
                         </Form>
                         <NavDropdown.Divider/>
                         <NavDropdown.Item as={Link} to='register' className="pt-0 pb-o"><small>Sign Up</small></NavDropdown.Item>
-                        <NavDropdown.Item onClick={this.props.onLogOut} className="pt-0 pb-o"><small>Forgot Password?</small></NavDropdown.Item>
+                        <NavDropdown.Item className="pt-0 pb-o"><small>Forgot Password?</small></NavDropdown.Item>
                     </NavDropdown>
-
     if(this.props.loggedIn) {
       userDropDown= <NavDropdown alignRight title="Login" id="basic-nav-dropdown">                  
-                        <NavDropdown.Item onClick={this.props.onLogOut} className="pt-0 pb-o"><small>log out</small></NavDropdown.Item>
+                        <NavDropdown.Item onClick={this.logoutHandler} className="pt-0 pb-o"><small>log out</small></NavDropdown.Item>
                         </NavDropdown>;
     }
   
@@ -112,10 +110,10 @@ const mapDispatchToProps = (dispatch:any) =>{
       onLogIn: (loginData:any) => {
 
         dispatch({type: API, payload:{
-          url:'/user/activate',
-          method:'GET',
+          url:'/login',
+          method:'POST',
           data:{...loginData},
-          accessToken:'bearer',
+          accessToken:'',
           onSuccess:loginSuccess,
           onFailure:(error:any)=>{return({type:LOG_IN_FAIL})},
           label:null,
@@ -123,7 +121,10 @@ const mapDispatchToProps = (dispatch:any) =>{
           }
         })
       },
-      onLogOut: () => dispatch({type: LOG_OUT, payload:{}}),
+      onLogOut: ()=>{
+        const action = logOut();
+        dispatch(action)
+      },
 
   }
 }
@@ -132,7 +133,7 @@ const mapStateToProps = (state: State) => {
   return {
     user:{
       username: state.user.username,
-      email: state.user.email
+      roles: state.user.roles,
     },
     loggedIn: state.loggedIn
   }

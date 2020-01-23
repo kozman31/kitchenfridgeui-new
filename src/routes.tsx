@@ -4,6 +4,7 @@ import App from './App';
 import PantryList from './pantry/pantryList';
 import UserRegistration from './user/register/userRegistration';
 import NavBar from './nav-bar/navbar';
+import {loadState} from './store/actions'
 
 import apiMiddleware from "./middleware/api";
 
@@ -11,7 +12,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import reducer from './store/reducer';
 
-const store = createStore(reducer, applyMiddleware(apiMiddleware));
+const store = createStore(reducer, loadState(), applyMiddleware(apiMiddleware));
 
 const Routes = () => (
     <Provider store={store}>

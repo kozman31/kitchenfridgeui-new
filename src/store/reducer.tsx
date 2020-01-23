@@ -1,47 +1,22 @@
 import * as act from './actions';
+import * as jwtTools from '../security/jwtTools';
 
-const initialState = {
-    loggedIn:false,
-    navLogin:{
-        email:"",
-        password:""
-      },
-    user: {
-        email:"",
-        username:"",
-        jwt:""
-    }
-}
-
-const reducer = (state = initialState, action:{type:string, payload:any}) =>{
+const reducer = (state:any, action:{type:string, payload:any}) =>{
     const payload = action.payload;
 
     switch(action.type){
         case act.LOG_IN: {
-            if(payload.email==='user'){
-                return {
-                    ...state,
-                    navLogin:{
-                        email:"",
-                        password:""
-                    },
-                    user:{
-                        email:"user@xyz.com",
-                        username:"userUses",
-                        jwt:"1234"
-                    },
-                    loggedIn: true
-                }
-            } else {
-                return {
-                    ...state,
-                    user:{
-                        email:"",
-                        username:"",
-                        jwt:""
-                    },
-                    loggedIn: false
-                }
+            return {
+                ...state,
+                navLogin:{
+                    email:"",
+                    password:""
+                },
+                user:{
+                    username: jwtTools.getUsername(),
+                    authorities: jwtTools.getRoles(),
+                },
+                loggedIn: jwtTools.isExpired(),
             }
 
         }
@@ -53,9 +28,8 @@ const reducer = (state = initialState, action:{type:string, payload:any}) =>{
                     password:""
                 },
                 user:{
-                    email:"",
                     username:"",
-                    jwt:""
+                    authorities:[]
                 },
                 loggedIn: false
             }
@@ -71,6 +45,11 @@ const reducer = (state = initialState, action:{type:string, payload:any}) =>{
             }
         }
         case act.DELETE_USER: {
+            return {
+                ...state
+            }
+        }
+        case act.REGISTER_SUCCESS: {
             return {
                 ...state
             }
