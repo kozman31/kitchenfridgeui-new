@@ -7,6 +7,10 @@ import { connect } from 'react-redux';
 interface Props {
   registerUser: (regFormData:any)=>void;
 }
+interface rule{
+  test: any,
+  message: string
+}
 class UserRegistration extends React.Component<Props,{}>  {
 
   state = {
@@ -17,13 +21,11 @@ class UserRegistration extends React.Component<Props,{}>  {
           type: 'text',
           placeholder: 'First Name',
           name:'firstName',
+          required:false,
         },
         value:'',
         label:'First name',
         touched: false,
-        validation:{
-          required:false,
-        },
       },
       lastName:{
         elementType: 'input',
@@ -31,13 +33,11 @@ class UserRegistration extends React.Component<Props,{}>  {
           type: 'text',
           placeholder: 'Last Name',
           name:'lastName',
+          required:false,
         },
         value:'',
         label:'Last Name',
         touched: false,
-        validation:{
-          required:false,
-        },
       },
       email:{
         elementType: 'input',
@@ -45,12 +45,14 @@ class UserRegistration extends React.Component<Props,{}>  {
           type: 'email',
           placeholder: 'email@example.com',
           name:'email',
+          required:true,
         },
         value:'',
         label:'Email Address',
         touched: false,
+        hasError:true,
+        errorMsg:[],
         validation:{
-          required:true,
           rules:[
             {
               test: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
@@ -65,12 +67,14 @@ class UserRegistration extends React.Component<Props,{}>  {
           type: 'text',
           placeholder: 'Username',
           name:'username',
+          required:true,
         },
         value:'',
         label:'Username',
         touched: false,
+        hasError:true,
+        errorMsg:[],
         validation:{
-          required:true,
           rules:[
             {
               test: /^[a-zA-Z0-9-_]+$/,
@@ -89,16 +93,18 @@ class UserRegistration extends React.Component<Props,{}>  {
           type: 'password',
           placeholder: 'Password',
           name:'password',
+          required:true,
         },
         value:'',
         label:'Password',
         touched: false,
+        hasError:true,
+        errorMsg:[],
         validation:{
-          required:true,
           rules:[
             {
               test: /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/,
-              message: "Please choose a password greater than 8 characters",
+              message: "Password must be greater than 8 characters",
             }
           ]
         },
@@ -109,26 +115,29 @@ class UserRegistration extends React.Component<Props,{}>  {
           type: 'password',
           placeholder: 'Confirm Password',
           name:'confirmPassword',
+          required:true,
         },
         value:'',
         label:'Confirm Password',
         touched: false,
+        hasError:true,
+        errorMsg:[],
         validation:{
-          required:true,
           rules:[
             {
               test:  /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/,
-              message: "",
+              message: ""
             },
-            {
-              test:  (confirmedPW:string)=>confirmedPW === this.state.form.password.value,
-              message: "Password does not match",
-            }
           ]
         },
       },
     },
-    onChange:(event:FormEvent<FormControl & HTMLInputElement>)=>this.handleChange(event)
+    onChange:(event:FormEvent<FormControl & HTMLInputElement>)=>this.handleChange(event),
+    onPwChange:(event:FormEvent<FormControl & HTMLInputElement>)=>this.handlePwChange(event),
+    formHasError: ()=>{
+      const form = this.state.form;
+      return form.email.hasError || form.username.hasError  || form.password.hasError ;
+    },
   }
   constructor(props:any){
     super(props);
@@ -147,8 +156,56 @@ class UserRegistration extends React.Component<Props,{}>  {
     const elementId = event.currentTarget.name;
     updatedState = { ...this.state.form};
     let updatedElement = updatedState[elementId];
-    updatedElement = {...updatedElement, value: event.currentTarget.value, touched:true};
+    let elHasError=false;
+    const elErorMsg =[''];
+    if(updatedElement.elementConfig.required){
+      updatedElement.validation.rules.map((rule:rule) =>{
+        if(rule.test instanceof Function && !rule.test(event.currentTarget.value)) {
+          elHasError=true
+          elErorMsg.push(rule.message);
+        }
+        if(rule.test instanceof RegExp && !rule.test.test(event.currentTarget.value)) {
+          elHasError=true;
+          elErorMsg.push(rule.message);
+        }
+      });
+    }
+    updatedElement = {...updatedElement, value: event.currentTarget.value, touched:true, hasError:elHasError, errorMsg:elErorMsg};
     updatedState = {...updatedState, [elementId]:updatedElement};
+    this.setState({form:updatedState});
+  }
+
+  public handlePwChange(event:FormEvent<FormControl & HTMLInputElement>) {
+    let updatedState: {[index:string]:any}
+    updatedState = { ...this.state.form};
+    const elementId = event.currentTarget.name;
+    const unchangedElId = elementId==='password' ? 'confirmPassword' : 'password'
+    let updatedPwElement = updatedState[elementId];
+    let unchangedPwEl =  updatedState[unchangedElId];
+    let elHasError=false;
+    const elErorMsg =[''];
+    const peArr = [updatedPwElement, unchangedPwEl];
+    peArr.map((el)=>{
+      if(el.elementConfig.required){
+        el.validation.rules.map((rule:rule) =>{
+          if(rule.test instanceof Function && !rule.test(event.currentTarget.value)) {
+            elHasError=true
+            elErorMsg.push(rule.message);
+          }
+          if(rule.test instanceof RegExp && !rule.test.test(event.currentTarget.value)) {
+            elHasError=true;
+            elErorMsg.push(rule.message);
+          }
+        })
+      }
+    })
+
+    updatedPwElement = {...updatedPwElement, value: event.currentTarget.value, touched:true, hasError:elHasError, errorMsg:elErorMsg};
+    unchangedPwEl = {...unchangedPwEl, hasError:elHasError};
+
+    updatedPwElement.hasError= updatedPwElement.hasError ? true: updatedPwElement.value!=unchangedPwEl.value;
+    unchangedPwEl.hasError= unchangedPwEl.hasError? true: updatedPwElement.value!=unchangedPwEl.value;
+    updatedState = {...updatedState, [elementId]:updatedPwElement, [unchangedElId]:unchangedPwEl};
     this.setState({form:updatedState});
   }
 
@@ -163,18 +220,26 @@ class UserRegistration extends React.Component<Props,{}>  {
         ...formObj[key]
       })
     }
+    const psMatch = <div>
+                      {this.state.form.password.value === this.state.form.confirmPassword.value ? "": "Passwords do not match"}
+                  </div>
     let form = <form name="registrationForm" onSubmit={this.handleSubmit}>
                 <div className="row">
         { formArray.map((el)=>{
+                if(el.elementConfig.type==='password')
+                  return <div key={el.key} className="justify-content-md-center col-6">
+                            <FormInput elementType={el.elementType} onChange={this.state.onPwChange} hasError={el.hasError} errorMsg={el.errorMsg} touched={el.touched} elementConfig={el.elementConfig} value={el.value} label={el.label}/>
+                          </div>
+
                 return <div key={el.key} className="justify-content-md-center col-6">
-                  <FormInput elementType={el.elementType} onChange={this.state.onChange} validation={el.validation} touched={el.touched} elementConfig={el.elementConfig} value={el.value} label={el.label}/>
-                  </div>
+                          <FormInput elementType={el.elementType} onChange={this.state.onChange} hasError={el.hasError} errorMsg={el.errorMsg} touched={el.touched} elementConfig={el.elementConfig} value={el.value} label={el.label}/>
+                        </div>
           })
         }
         </div>
+        {psMatch}
         <div className="form-group text-center">
-            <input type="submit" disabled={false} className="btn btn-dark btn-sm m-1" value="Submit" />
-            <input type="button" className="btn btn-dark btn-sm m-1" value="Reset" />
+            <input type="submit" disabled={this.state.formHasError()} className="btn btn-dark btn-sm m-1" value="Register" />
           </div>
       </form>;
 

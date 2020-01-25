@@ -19,50 +19,36 @@ const FormInput: React.FC<any> = (props: any) =>{
     let inputElemant = null;
     let requiredIcon =  null;
 
-    const required = props.validation.required;
+    const isRequired = props.elementConfig.required;
     const classes= [''];
-    let errorMsg = '';
-    if (required){
+    let errorMsg = [''];
+
+    if (isRequired){
         requiredIcon = <FontAwesomeIcon className="small pr-1" icon="star-of-life"></FontAwesomeIcon>;
 
-        props.validation.rules.map((rule:rule) =>{
-            if(rule.test instanceof Function) {
-                if(rule.test(props.value) && props.touched){
-                    classes.push('validTouched');
-                } else 
-                if(props.touched){
-                        classes.push('invalidTouched');
-                        errorMsg = rule.message;
-                    }
-                    else
-                        classes.push('invalid'); 
+        if(!props.hasError && props.touched){
+            classes.push('validTouched');
+        } else {
+        if(props.touched){
+                classes.push('invalidTouched');
+                errorMsg = props.errorMsg;
             }
-            if(rule.test instanceof RegExp) {
-                if(rule.test.test(props.value) && props.touched){
-                    classes.push('validTouched');
-                } else 
-                    if(props.touched){
-                        classes.push('invalidTouched');
-                        errorMsg = rule.message;
-                    }
-                    else
-                        classes.push('invalid');
-            }
-            return null;
-        })
+            else
+                classes.push('invalid'); 
+        }
     }
-
+    
     switch (props.elementType){
         case 'input': {
-            inputElemant = <FormControl className={classes.join(' ')} {...props.elementConfig} required={props.validation.required} onChange={props.onChange} value={props.value}/>
+            inputElemant = <FormControl className={classes.join(' ')} {...props.elementConfig} onChange={props.onChange} value={props.value}/>
             break;
         }
         case 'textArea': {
-            inputElemant = <FormControl className={classes.join(' ')} as={props.elementType} {...props.elementConfig} onChange={props.onChange} value={props.value}/>
+            inputElemant = <FormControl className={classes.join(' ')} as={props.elementType} {...props.elementConfig} required={isRequired} onChange={props.onChange} value={props.value}/>
             break;
         }
         case 'select': {
-            inputElemant = <FormControl as={props.elementType} name={props.name} id={props.name} className={classes.join(' ')}>
+            inputElemant = <FormControl as={props.elementType} name={props.name} id={props.name} required={isRequired} className={classes.join(' ')}>
                                 <option value="" />
                                     {props.options.map((option: option) => (
                                         <option key={option.key} value={option.value}>
@@ -79,12 +65,15 @@ const FormInput: React.FC<any> = (props: any) =>{
     }
     return (  
         <FormGroup controlId={props.name}>
-                <FormLabel>
-                    {requiredIcon}
-                    {props.label}
-                </FormLabel>
-                {inputElemant}
-                <div className="text-danger">{errorMsg}</div>
+            <FormLabel>
+                {requiredIcon}
+                {props.label}
+            </FormLabel>
+            {inputElemant}
+            {  errorMsg.map((msg, index)=>{
+                return <div key={index} className="text-danger">{msg}</div>
+                })
+            }
         </FormGroup>
     )
 };
