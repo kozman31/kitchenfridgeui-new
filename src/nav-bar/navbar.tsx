@@ -65,8 +65,8 @@ class NavBar extends React.Component<Props, {}> {
   public render(){
     let userDropDown = <NavDropdown alignRight title="Login" id="basic-nav-dropdown">
                         <Form inline onSubmit={this.loginHandler} name="navLogin">
-                            <FormControl type="text" name="username" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.navLogin.username.value} placeholder="Username" size="sm" className="m-2" />
-                            <FormControl type="password" name="password" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.navLogin.password.value} placeholder="Password" size="sm" className="m-2" />
+                            <FormControl type="text" name="username" autoComplete="username" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.navLogin.username.value} placeholder="Username" size="sm" className="m-2" />
+                            <FormControl type="password" name="password" autoComplete="current-password" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.navLogin.password.value} placeholder="Password" size="sm" className="m-2" />
                             <Button variant="dark" type="submit" size="sm" className="mr-auto ml-auto">Login</Button>
                         </Form>
                         <NavDropdown.Divider/>
