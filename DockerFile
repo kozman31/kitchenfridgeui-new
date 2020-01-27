@@ -11,7 +11,7 @@ RUN npm run build
 # production environment
 FROM nginx:alpine
 COPY --from=builder /app/build /usr/share/nginx/html
-COPY --from=builder /app/dist/kitchenFridgeUI/ /usr/share/nginx/html/
+#COPY --from=builder /app/dist/kitchenFridgeUI/ /usr/share/nginx/html/
 COPY --from=builder /app/ssl/ca_bundle.crt /var/certificates/
 COPY --from=builder /app/ssl/certificate.crt /var/certificates/
 COPY --from=builder /app/ssl/private.key /var/certificates/
