@@ -1,6 +1,6 @@
 import React, { FormEvent } from 'react';
 import FormInput from '../../forms/formInput';
-import {API, registerSuccess}  from '../../store/actions';
+import {API, registerFailed, registerSuccess}  from '../../store/actions';
 import { FormControl } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
@@ -152,25 +152,26 @@ class UserRegistration extends React.Component<Props,{}>  {
   }
 
   public handleChange(event:FormEvent<FormControl & HTMLInputElement>) {
-    let updatedState: {[index:string]:any}
+    let updatedState: {[index:string]:any};
     const elementId = event.currentTarget.name;
     updatedState = { ...this.state.form};
     let updatedElement = updatedState[elementId];
-    let elHasError=false;
-    const elErorMsg =[''];
+    let hasError=false;
+    let errorMsgs:string[]=[];
     if(updatedElement.elementConfig.required){
       updatedElement.validation.rules.map((rule:rule) =>{
         if(rule.test instanceof Function && !rule.test(event.currentTarget.value)) {
-          elHasError=true
-          elErorMsg.push(rule.message);
+          hasError=true
+          errorMsgs.push(rule.message);
         }
         if(rule.test instanceof RegExp && !rule.test.test(event.currentTarget.value)) {
-          elHasError=true;
-          elErorMsg.push(rule.message);
+          hasError=true;
+          errorMsgs.push(rule.message);
         }
+        return null;
       });
     }
-    updatedElement = {...updatedElement, value: event.currentTarget.value, touched:true, hasError:elHasError, errorMsg:elErorMsg};
+    updatedElement = {...updatedElement, value: event.currentTarget.value, touched:true, hasError:hasError, errorMsg:errorMsgs};
     updatedState = {...updatedState, [elementId]:updatedElement};
     this.setState({form:updatedState});
   }
@@ -179,32 +180,32 @@ class UserRegistration extends React.Component<Props,{}>  {
     let updatedState: {[index:string]:any}
     updatedState = { ...this.state.form};
     const elementId = event.currentTarget.name;
-    const unchangedElId = elementId==='password' ? 'confirmPassword' : 'password'
+    const unchangedElId = elementId === 'password' ? 'confirmPassword' : 'password';
     let updatedPwElement = updatedState[elementId];
     let unchangedPwEl =  updatedState[unchangedElId];
-    let elHasError=false;
-    const elErorMsg =[''];
-    const peArr = [updatedPwElement, unchangedPwEl];
-    peArr.map((el)=>{
-      if(el.elementConfig.required){
+    let hasError=false;
+    let errorMsgs:string[]=[];
+    [updatedPwElement, unchangedPwEl].map((el)=>{
         el.validation.rules.map((rule:rule) =>{
           if(rule.test instanceof Function && !rule.test(event.currentTarget.value)) {
-            elHasError=true
-            elErorMsg.push(rule.message);
+            hasError=true
+            errorMsgs.push(rule.message);
           }
           if(rule.test instanceof RegExp && !rule.test.test(event.currentTarget.value)) {
-            elHasError=true;
-            elErorMsg.push(rule.message);
+            hasError=true;
+            errorMsgs.push(rule.message);
           }
+          return null;
         })
-      }
+        return null;
     })
 
-    updatedPwElement = {...updatedPwElement, value: event.currentTarget.value, touched:true, hasError:elHasError, errorMsg:elErorMsg};
-    unchangedPwEl = {...unchangedPwEl, hasError:elHasError};
+    updatedPwElement = {...updatedPwElement, value: event.currentTarget.value, touched:true, hasError:hasError, errorMsg:errorMsgs};
+    unchangedPwEl = {...unchangedPwEl, hasError:hasError};
 
-    updatedPwElement.hasError= updatedPwElement.hasError ? true: updatedPwElement.value!=unchangedPwEl.value;
-    unchangedPwEl.hasError= unchangedPwEl.hasError? true: updatedPwElement.value!=unchangedPwEl.value;
+    updatedPwElement.hasError= updatedPwElement.hasError ? true: updatedPwElement.value!==unchangedPwEl.value;
+    unchangedPwEl.hasError= unchangedPwEl.hasError? true: updatedPwElement.value!==unchangedPwEl.value;
+
     updatedState = {...updatedState, [elementId]:updatedPwElement, [unchangedElId]:unchangedPwEl};
     this.setState({form:updatedState});
   }
@@ -212,7 +213,6 @@ class UserRegistration extends React.Component<Props,{}>  {
   public render(){
     
     const formObj: {[index:string]:any}= { ...this.state.form};
-    // formObj = { ...this.state.form};
     const formArray=[];
     for (let key in formObj){
       formArray.push({
@@ -220,7 +220,7 @@ class UserRegistration extends React.Component<Props,{}>  {
         ...formObj[key]
       })
     }
-    const psMatch = <div>
+    const psMatch = <div className="text-center text-danger">
                       {this.state.form.password.value === this.state.form.confirmPassword.value ? "": "Passwords do not match"}
                   </div>
     let form = <form name="registrationForm" onSubmit={this.handleSubmit}>
@@ -230,7 +230,6 @@ class UserRegistration extends React.Component<Props,{}>  {
                   return <div key={el.key} className="justify-content-md-center col-6">
                             <FormInput elementType={el.elementType} onChange={this.state.onPwChange} hasError={el.hasError} errorMsg={el.errorMsg} touched={el.touched} elementConfig={el.elementConfig} value={el.value} label={el.label}/>
                           </div>
-
                 return <div key={el.key} className="justify-content-md-center col-6">
                           <FormInput elementType={el.elementType} onChange={this.state.onChange} hasError={el.hasError} errorMsg={el.errorMsg} touched={el.touched} elementConfig={el.elementConfig} value={el.value} label={el.label}/>
                         </div>
@@ -269,7 +268,7 @@ const mapDispatchToProps = (dispatch:any) =>{
           data:{...loginData},
           accessToken:'',
           onSuccess:registerSuccess,
-          onFailure:(error:any)=>console.log('Oops, An error occurred.', error),
+          onFailure:registerFailed,
           label:null,
           headers:null
           }

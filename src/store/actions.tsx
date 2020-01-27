@@ -7,7 +7,7 @@ export const CREATE_USER = "CREATE_USER";
 export const EDIT_USER = "EDIT_USER";
 export const DELETE_USER = "DELETE_USER";
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
-
+export const REGISTER_FAIL = "REGISTER_FAIL";
 export const API = 'API';
 
 export const loginSuccess = (data:any) => {
@@ -27,6 +27,11 @@ export const loginFailed = (data:any) => {
   export const registerSuccess = (data:any) => {
     console.log("register success callback data ", data);
     return {type: REGISTER_SUCCESS, payload: {...data}};
+  }
+
+  export const registerFailed = (data:any) => {
+    console.log("register success callback data ", data);
+    return {type: REGISTER_FAIL, payload: {...data}};
   }
 
   export const loadState = () => {

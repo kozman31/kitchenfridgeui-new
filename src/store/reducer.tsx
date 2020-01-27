@@ -2,8 +2,6 @@ import * as act from './actions';
 import * as jwtTools from '../security/jwtTools';
 
 const reducer = (state:any, action:{type:string, payload:any}) =>{
-    const payload = action.payload;
-
     switch(action.type){
         case act.LOG_IN: {
             return {
@@ -50,6 +48,11 @@ const reducer = (state:any, action:{type:string, payload:any}) =>{
             }
         }
         case act.REGISTER_SUCCESS: {
+            return {
+                ...state
+            }
+        }
+        case act.REGISTER_FAIL: {
             return {
                 ...state
             }

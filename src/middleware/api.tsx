@@ -18,6 +18,10 @@ const apiMiddleware = ( dispatch: any ) => (next:any) => (action:any) => {
     
     const dataOrParams = ["GET", "DELETE"].includes(method) ? "params" : "data";
     
+    let formInput:{[index:string]:any}={};
+    for(let key in data){
+      formInput[key]= data[key].value
+    }
     
     // axios default configs
     axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
@@ -34,7 +38,7 @@ const apiMiddleware = ( dispatch: any ) => (next:any) => (action:any) => {
         url,
         method,
         headers,
-        [dataOrParams]: data
+        [dataOrParams]: formInput,
       })
       .then((response) => {
         console.log("data received: ", response);
