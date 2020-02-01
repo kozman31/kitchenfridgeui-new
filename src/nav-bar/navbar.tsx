@@ -10,7 +10,7 @@ import {loginFailed, API, loginSuccess, logOut}  from '../store/actions';
     onLogOut: () => void;
     user: {
       username:string,
-      roles: [],
+      authorities: [],
     };
     loggedIn:boolean;
   }
@@ -22,7 +22,7 @@ import {loginFailed, API, loginSuccess, logOut}  from '../store/actions';
     },
     user: {
       username:string,
-      roles: [],
+      authorities: [],
     }
     loggedIn:boolean
   }
@@ -43,7 +43,7 @@ class NavBar extends React.Component<Props, {}> {
   }
 
   logoutHandler = () =>{
-    const updatedNavLogin = {...this.state.navLogin, username:"", password:""};
+    const updatedNavLogin = {...this.state.navLogin, username:{value:""}, password:{value:""}};
     this.setState({navLogin:updatedNavLogin});
     this.props.onLogOut();
     
@@ -133,7 +133,7 @@ const mapStateToProps = (state: State) => {
   return {
     user:{
       username: state.user.username,
-      roles: state.user.roles,
+      authorities: state.user.authorities,
     },
     loggedIn: state.loggedIn
   }
