@@ -1,7 +1,7 @@
 import React, { FormEvent } from 'react';
 import FormInput from '../../forms/formInput';
 import {API, registerFailed, registerSuccess}  from '../../store/actions';
-import { FormControl } from 'react-bootstrap';
+import { FormControl, Col, Container } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
 interface Props {
@@ -229,12 +229,12 @@ class UserRegistration extends React.Component<Props,{}>  {
                 <div className="row">
         { formArray.map((el)=>{
                 if(el.elementConfig.type==='password')
-                  return <div key={el.key} className="justify-content-md-center col-6">
+                  return <Col key={el.key} className="justify-content-md-center col-6">
                             <FormInput elementType={el.elementType} onChange={this.state.onPwChange} hasError={el.hasError} errorMsg={el.errorMsg} touched={el.touched} elementConfig={el.elementConfig} value={el.value} label={el.label}/>
-                          </div>
-                return <div key={el.key} className="justify-content-md-center col-6">
+                          </Col>
+                return <Col key={el.key} className="justify-content-md-center col-6">
                           <FormInput elementType={el.elementType} onChange={this.state.onChange} hasError={el.hasError} errorMsg={el.errorMsg} touched={el.touched} elementConfig={el.elementConfig} value={el.value} label={el.label}/>
-                        </div>
+                        </Col>
           })
         }
         </div>
@@ -245,7 +245,7 @@ class UserRegistration extends React.Component<Props,{}>  {
       </form>;
 
     return (
-      <div className="container userRegistration">
+      <Container className="userRegistration">
         <div className="text-center">
           <h2>Register now</h2>
           <h5>to save your recipes and track your pantry</h5>
@@ -255,7 +255,7 @@ class UserRegistration extends React.Component<Props,{}>  {
             After registering you will receive an email to activate your account. If you do not activate your account
             within 48 hours it will be deleted and you will need to register again.
         </div>
-      </div>
+      </Container>
     );
   }
 }

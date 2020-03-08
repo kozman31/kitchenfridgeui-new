@@ -43,7 +43,7 @@ const FormInput: React.FC<any> = (props: any) =>{
             inputElemant = <FormControl className={classes.join(' ')} {...props.elementConfig} onChange={props.onChange} value={props.value}/>
             break;
         }
-        case 'textArea': {
+        case 'textarea': {
             inputElemant = <FormControl className={classes.join(' ')} as={props.elementType} {...props.elementConfig} required={isRequired} onChange={props.onChange} value={props.value}/>
             break;
         }

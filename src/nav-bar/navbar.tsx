@@ -70,7 +70,7 @@ class NavBar extends React.Component<Props, {}> {
                             <Button variant="dark" type="submit" size="sm" className="mr-auto ml-auto">Login</Button>
                         </Form>
                         <NavDropdown.Divider/>
-                        <NavDropdown.Item as={Link} to='register' className="pt-0 pb-o"><small>Sign Up</small></NavDropdown.Item>
+                        <NavDropdown.Item as={Link} to='/register' className="pt-0 pb-o"><small>Sign Up</small></NavDropdown.Item>
                         <NavDropdown.Item className="pt-0 pb-o"><small>Forgot Password?</small></NavDropdown.Item>
                     </NavDropdown>
     if(this.props.loggedIn) {
@@ -87,12 +87,12 @@ class NavBar extends React.Component<Props, {}> {
           <Nav className="mr-auto">
             <Nav.Link as={Link} to='/'>Home</Nav.Link>
             <NavDropdown title="Recipes" id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to='register'>Add Recipe</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to='register'>View Recipes</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/addrecipe'>Add Recipe</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/register'>View Recipes</NavDropdown.Item>
             </NavDropdown>
             <NavDropdown title="Pantry" id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to='pantry'>Add Item</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to='pantry'>View Pantry</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/pantry'>Add Item</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/pantry'>View Pantry</NavDropdown.Item>
             </NavDropdown>
             <Navbar.Text>{this.props.user.username}</Navbar.Text>
           </Nav>
