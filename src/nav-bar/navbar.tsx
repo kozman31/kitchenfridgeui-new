@@ -31,8 +31,8 @@ class NavBar extends React.Component<Props, {}> {
 
   state = {
     navLogin:{
-      username:{value:""},
-      password:{value:""}
+      username:"",
+      password:""
     }
   }
 
@@ -43,30 +43,30 @@ class NavBar extends React.Component<Props, {}> {
   }
 
   logoutHandler = () =>{
-    const updatedNavLogin = {...this.state.navLogin, username:{value:""}, password:{value:""}};
+    const updatedNavLogin = {...this.state.navLogin, username:"", password:""};
     this.setState({navLogin:updatedNavLogin});
     this.props.onLogOut();
     
   }
 
   componentDidUpdate(){
-    if(this.props.loggedIn && (this.state.navLogin.username.value!=="" || this.state.navLogin.password.value!=="")){
-    const updatedNavLogin = {...this.state.navLogin, username:{value:""}, password:{value:""}};
+    if(this.props.loggedIn && (this.state.navLogin.username!=="" || this.state.navLogin.password!=="")){
+    const updatedNavLogin = {...this.state.navLogin, username:"", password:""};
     this.setState({navLogin:updatedNavLogin});
     }
   }
 
   changeHandler = (event: FormEvent<FormControl & HTMLInputElement>) => {
     const elementId = event.currentTarget.name;
-    const updatedNavLogin = { ...this.state.navLogin, [elementId]:{value:event.currentTarget.value }};
+    const updatedNavLogin = { ...this.state.navLogin, [elementId]:event.currentTarget.value };
     this.setState({navLogin:updatedNavLogin});
   }
 
   public render(){
     let userDropDown = <NavDropdown alignRight title="Login" id="basic-nav-dropdown">
                         <Form inline onSubmit={this.loginHandler} name="navLogin">
-                            <FormControl type="text" name="username" autoComplete="username" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.navLogin.username.value} placeholder="Username" size="sm" className="m-2" />
-                            <FormControl type="password" name="password" autoComplete="current-password" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.navLogin.password.value} placeholder="Password" size="sm" className="m-2" />
+                            <FormControl type="text" name="username" autoComplete="username" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.navLogin.username} placeholder="Username" size="sm" className="m-2" />
+                            <FormControl type="password" name="password" autoComplete="current-password" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.navLogin.password} placeholder="Password" size="sm" className="m-2" />
                             <Button variant="dark" type="submit" size="sm" className="mr-auto ml-auto">Login</Button>
                         </Form>
                         <NavDropdown.Divider/>

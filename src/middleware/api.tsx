@@ -18,11 +18,8 @@ const apiMiddleware = ( dispatch: any ) => (next:any) => (action:any) => {
     
     const dataOrParams = ["GET", "DELETE"].includes(method) ? "params" : "data";
     
-    let formInput:{[index:string]:any}={};
-    for(let key in data){
-      formInput[key]= data[key].value
-    }
-    
+    // const formInput = parseInputToJSON(data);
+    console.log(data)
     // axios default configs
     axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
     axios.defaults.headers.common["Content-Type"]="application/json";
@@ -38,7 +35,7 @@ const apiMiddleware = ( dispatch: any ) => (next:any) => (action:any) => {
         url,
         method,
         headers,
-        [dataOrParams]: formInput,
+        [dataOrParams]: data,
       })
       .then((response) => {
         console.log("data received: ", response);
@@ -71,6 +68,14 @@ const apiMiddleware = ( dispatch: any ) => (next:any) => (action:any) => {
   const apiError = (error: any) =>{
     console.log('Oops, An error occurred.', error)
     return {type: 'API_ERROR'}
+  }
+
+  export const parseInputToJSON =(data: any) => {
+    let formInput:{[index:string]:any}={};
+    for(let key in data){
+      formInput[key]= data[key].value
+    }
+    return formInput;
   }
 
 export default apiMiddleware;

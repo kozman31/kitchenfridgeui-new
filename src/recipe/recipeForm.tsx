@@ -3,6 +3,7 @@ import FormInput from '../forms/formInput';
 import {API, registerFailed, registerSuccess}  from '../store/actions';
 import { FormControl, Col, Container } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import { parseInputToJSON } from '../middleware/api';
 
 interface Props {
   saveRecipe: (recipeFormData:any)=>void;
@@ -111,9 +112,9 @@ class RecipeForm extends React.Component<Props,{}>  {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   public handleSubmit(event:FormEvent<HTMLFormElement>){
-    console.log(event);
     event.preventDefault();
-    const recipeFormData = {...this.state.form};
+    const {form, ingredientList}: {[index:string]:any}= { ...this.state};
+    const recipeFormData = {...parseInputToJSON(form), ingredientList:parseInputToJSON(ingredientList)};
     this.props.saveRecipe(recipeFormData);
   }
 
@@ -156,7 +157,6 @@ class RecipeForm extends React.Component<Props,{}>  {
     let updatedState: {[index:string]:any};
     updatedState = { ...this.state};
     let ingredientList = updatedState['ingredientList'];
-    console.log(ingredientList);
 
     ingredientList.push({
       name: '',
@@ -178,10 +178,7 @@ class RecipeForm extends React.Component<Props,{}>  {
     let updatedState: {[index:string]:any};
     updatedState = { ...this.state};
     let ingredientList = updatedState['ingredientList'];
-    
-    console.log(ingredientList);
     ingredientList.splice(index, 1);
-    console.log(ingredientList);
     if(ingredientList.length==0)
       this.addIngredient(event);
     this.setState({ingredientList:ingredientList});
@@ -236,7 +233,7 @@ class RecipeForm extends React.Component<Props,{}>  {
 
 const mapDispatchToProps = (dispatch:any) =>{
   return {
-    registerUser: (recipeData:any) => {
+    saveRecipe: (recipeData:any) => {
 
         dispatch({type: API, payload:{
           url:'/saverecipe',

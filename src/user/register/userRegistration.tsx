@@ -3,6 +3,7 @@ import FormInput from '../../forms/formInput';
 import {API, registerFailed, registerSuccess}  from '../../store/actions';
 import { FormControl, Col, Container } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import { parseInputToJSON } from '../../middleware/api';
 
 interface Props {
   registerUser: (regFormData:any)=>void;
@@ -147,10 +148,9 @@ class UserRegistration extends React.Component<Props,{}>  {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   public handleSubmit(event:FormEvent<HTMLFormElement>){
-    console.log(event);
     event.preventDefault();
     const regFormData = {...this.state.form};
-    this.props.registerUser(regFormData);
+    this.props.registerUser(parseInputToJSON(regFormData));
   }
 
   public handleChange(event:FormEvent<FormControl & HTMLInputElement>) {
