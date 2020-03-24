@@ -3,7 +3,7 @@ import FormInput from '../../forms/formInput';
 import {API, registerFailed, registerSuccess}  from '../../store/actions';
 import { FormControl, Col, Container } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { parseInputToJSON } from '../../middleware/api';
+import { parseInputToJSON } from '../../tools/jsonParsers';
 
 interface Props {
   registerUser: (regFormData:any)=>void;

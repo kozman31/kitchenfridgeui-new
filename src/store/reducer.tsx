@@ -1,5 +1,5 @@
 import * as act from './actions';
-import * as jwtTools from '../security/jwtTools';
+import * as jwtTools from '../tools/jwtTools';
 
 const reducer = (state:any, action:{type:string, payload:any}) =>{
     switch(action.type){

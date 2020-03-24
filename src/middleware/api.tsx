@@ -70,12 +70,4 @@ const apiMiddleware = ( dispatch: any ) => (next:any) => (action:any) => {
     return {type: 'API_ERROR'}
   }
 
-  export const parseInputToJSON =(data: any) => {
-    let formInput:{[index:string]:any}={};
-    for(let key in data){
-      formInput[key]= data[key].value
-    }
-    return formInput;
-  }
-
 export default apiMiddleware;

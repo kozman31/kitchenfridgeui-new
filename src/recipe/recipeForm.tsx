@@ -3,7 +3,7 @@ import FormInput from '../forms/formInput';
 import {API, registerFailed, registerSuccess}  from '../store/actions';
 import { FormControl, Col, Container } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { parseInputToJSON } from '../middleware/api';
+import { parseInputToJSON, parseIngredientToJSON } from '../tools/jsonParsers';
 
 interface Props {
   saveRecipe: (recipeFormData:any)=>void;
@@ -13,12 +13,11 @@ interface rule{
   message: string
 }
 interface ingredient{
-    name: string,
-    amount: string,
+    ingredientName: string,
+    ingredientAmount: string,
     elementConfig: {
       type: 'text',
       placeholder: 'Ingredient Name',
-      name:'ingredientName',
       required:false,
     },
   value:'',
@@ -86,12 +85,11 @@ class RecipeForm extends React.Component<Props,{}>  {
       },
     },
     ingredientList: [{
-      name: '',
-      amount: '',
+      ingredientName: "",
+      ingredientAmount: "",
       elementConfig: {
         type: 'text',
         placeholder: 'Ingredient Name',
-        name:'ingredientName',
         required:false,
       },
       value:'',
@@ -114,7 +112,7 @@ class RecipeForm extends React.Component<Props,{}>  {
   public handleSubmit(event:FormEvent<HTMLFormElement>){
     event.preventDefault();
     const {form, ingredientList}: {[index:string]:any}= { ...this.state};
-    const recipeFormData = {...parseInputToJSON(form), ingredientList:parseInputToJSON(ingredientList)};
+    const recipeFormData = {...parseInputToJSON(form), ingredientList:parseIngredientToJSON(ingredientList)};
     this.props.saveRecipe(recipeFormData);
   }
 
@@ -148,7 +146,7 @@ class RecipeForm extends React.Component<Props,{}>  {
     updatedState = { ...this.state};
     const ingredientList = updatedState.ingredientList;
     let updatedElement = ingredientList[index];
-    updatedElement = {...updatedElement, value: event.currentTarget.value};
+    updatedElement = {...updatedElement, [event.currentTarget.name]: event.currentTarget.value};
     ingredientList[index] = updatedElement;
     this.setState({ingredientList:ingredientList});
   }
@@ -159,12 +157,10 @@ class RecipeForm extends React.Component<Props,{}>  {
     let ingredientList = updatedState['ingredientList'];
 
     ingredientList.push({
-      name: '',
-      amount: '',
+      ingredientName: "",
+      ingredientAmount: "",
       elementConfig: {
         type: 'text',
-        placeholder: 'Ingredient Name',
-        name:'ingredientName',
         required:false,
       },
     value:'',
@@ -197,7 +193,18 @@ class RecipeForm extends React.Component<Props,{}>  {
     let ingrientsElement =   <div className="row">
         { ingredientList.map((item:ingredient, index:number)=>{
             return <Col key={index} className="justify-content-md-center col-6">
-            <FormInput elementType="input" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.state.updateIngredient(event, index)} elementConfig={item.elementConfig} value={item.value} label={item.label}/>
+            <FormInput elementType="input"
+                        onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.state.updateIngredient(event, index)}
+                        elementConfig={{...item.elementConfig, name:"ingredientName", placeholder: 'Ingredient Name'}}
+                        value={item.ingredientName}
+                        label={item.label}
+                        />
+            <FormInput elementType="input"
+                        onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.state.updateIngredient(event, index)}
+                        elementConfig={{...item.elementConfig, name:"ingredientAmount", placeholder: 'Amount'}}
+                        value={item.ingredientAmount}
+                        label=''
+                        />
             <input type="button"  className="btn btn-dark btn-sm m-1" onClick={(event:MouseEvent<MouseEvent & HTMLInputElement>)=>this.state.deleteIngredient(event, index)} value="Delete Ingredient" />
           </Col>
         })

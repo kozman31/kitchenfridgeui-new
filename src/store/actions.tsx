@@ -1,4 +1,4 @@
-import * as jwtTools from '../security/jwtTools';
+import * as jwtTools from '../tools/jwtTools';
 export const LOG_IN = "LOG_IN";
 export const LOG_OUT = "LOG_OUT";
 export const LOG_IN_FAIL = "LOG_IN_FAIL";

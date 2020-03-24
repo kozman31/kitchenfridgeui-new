@@ -18,6 +18,7 @@ interface option{
 const FormInput: React.FC<any> = (props: any) =>{
     let inputElemant = null;
     let requiredIcon =  null;
+    let label = null;
 
     const isRequired = props.elementConfig.required;
     const classes= [''];
@@ -63,12 +64,16 @@ const FormInput: React.FC<any> = (props: any) =>{
             break;
         }
     }
+
+    if (props.label !=""){
+        label = <FormLabel>
+                    {requiredIcon}
+                    {props.label}
+                </FormLabel>
+    }
     return (  
         <FormGroup controlId={props.name}>
-            <FormLabel>
-                {requiredIcon}
-                {props.label}
-            </FormLabel>
+            {label}
             {inputElemant}
             {  errorMsg.map((msg, index)=>{
                 return <div key={index} className="text-danger">{msg}</div>
