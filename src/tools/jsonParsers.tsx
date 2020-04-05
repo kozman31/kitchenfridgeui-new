@@ -7,9 +7,9 @@ export const parseInputToJSON =(data: any) => {
   }
 
   export const parseIngredientToJSON =(data: any) => {
-    let ingredientList:{[index:string]:any}={};
+    let ingredientList=[];
     for(let key in data){
-      ingredientList[key]= {ingredientName:data[key].ingredientName, ingredientAmount:data[key].ingredientAmount};
+      ingredientList.push({name:data[key].ingredientName, quantity:data[key].ingredientAmount});
     }
     return ingredientList;
   }

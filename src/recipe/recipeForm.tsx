@@ -1,7 +1,7 @@
 import React, { FormEvent,MouseEvent } from 'react';
 import FormInput from '../forms/formInput';
 import {API, registerFailed, registerSuccess}  from '../store/actions';
-import { FormControl, Col, Container } from 'react-bootstrap';
+import { FormControl, Col, Row, Container } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { parseInputToJSON, parseIngredientToJSON } from '../tools/jsonParsers';
 
@@ -40,8 +40,8 @@ class RecipeForm extends React.Component<Props,{}>  {
         validation:{
           rules:[
             {
-              test: /^[a-zA-Z0-9-_]+$/,
-              message: "What are you making?",
+              test: /^[a-zA-Z0-9-_ ]+$/,
+              message: "You need a recipe name",
             }
           ]
         },
@@ -65,12 +65,12 @@ class RecipeForm extends React.Component<Props,{}>  {
         elementType: 'textarea',
         elementConfig: {
           type: 'text',
-          placeholder: '',
+          placeholder: 'Step 1)...',
           name:'instructions',
           required:false,
         },
         value:'',
-        label:'Instructions',
+        label:'Instructions/Steps',
         touched: false,
         hasError:true,
         errorMsg:[],
@@ -78,7 +78,7 @@ class RecipeForm extends React.Component<Props,{}>  {
           rules:[
             {
               test: /^[a-zA-Z0-9-_]+$/,
-              message: "What are you making?",
+              message: "You can't make an omlette if you don't crack some eggs",
             }
           ]
         },
@@ -93,7 +93,7 @@ class RecipeForm extends React.Component<Props,{}>  {
         required:false,
       },
       value:'',
-      label:'Ingredient',
+      label:'',
     }],
     onChange:(event:FormEvent<FormControl & HTMLInputElement>)=>this.handleChange(event),
     addIngredient:(event:MouseEvent<MouseEvent & HTMLInputElement>)=>this.addIngredient(event),
@@ -164,7 +164,7 @@ class RecipeForm extends React.Component<Props,{}>  {
         required:false,
       },
     value:'',
-    label:'Ingredient ',
+    label:'',
   })
   
     this.setState({ingredientList:ingredientList});
@@ -190,9 +190,9 @@ class RecipeForm extends React.Component<Props,{}>  {
         ...form[key]
       })
     }
-    let ingrientsElement =   <div className="row">
+    let ingrientsElement =   <Row>
         { ingredientList.map((item:ingredient, index:number)=>{
-            return <Col key={index} className="justify-content-md-center col-6">
+            return <Col key={index} className="justify-content-md-center col-6 mt-2">
             <FormInput elementType="input"
                         onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.state.updateIngredient(event, index)}
                         elementConfig={{...item.elementConfig, name:"ingredientName", placeholder: 'Ingredient Name'}}
@@ -201,7 +201,7 @@ class RecipeForm extends React.Component<Props,{}>  {
                         />
             <FormInput elementType="input"
                         onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.state.updateIngredient(event, index)}
-                        elementConfig={{...item.elementConfig, name:"ingredientAmount", placeholder: 'Amount'}}
+                        elementConfig={{...item.elementConfig, name:"ingredientAmount", placeholder: 'Quantity'}}
                         value={item.ingredientAmount}
                         label=''
                         />
@@ -209,19 +209,28 @@ class RecipeForm extends React.Component<Props,{}>  {
           </Col>
         })
         }
-        </div>;
+        </Row>;
 
     let formElement = <form name="registrationForm" onSubmit={this.handleSubmit}>
                 <div className="row">
         { formArray.map((el)=>{
-                return <Col key={el.key} className="justify-content-md-center col-6">
-                          <FormInput elementType={el.elementType} onChange={this.state.onChange} hasError={el.hasError} errorMsg={el.errorMsg} touched={el.touched} elementConfig={el.elementConfig} value={el.value} label={el.label}/>
-                        </Col>
+          if( el.key == 'instructions' || el.key == 'description' )
+            return <Row key={el.key} className="col-12">
+                    <Col className="justify-content-md-center col-11">
+                      <FormInput elementType={el.elementType} onChange={this.state.onChange} hasError={el.hasError} errorMsg={el.errorMsg} touched={el.touched} elementConfig={el.elementConfig} value={el.value} label={el.label}/>
+                    </Col>
+                    </Row>
+          else
+            return <Col key={el.key} className="justify-content-md-center col-7">
+                      <FormInput elementType={el.elementType} onChange={this.state.onChange} hasError={el.hasError} errorMsg={el.errorMsg} touched={el.touched} elementConfig={el.elementConfig} value={el.value} label={el.label}/>
+                    </Col>
+     
           })
         }
         </div>
+        <Row className="col-12">Ingredients</Row>
         {ingrientsElement}
-        <div className="form-group text-center">
+        <div className="form-group text-center mt-2">
           <input type="button"  className="btn btn-dark btn-sm m-1" onClick={this.state.addIngredient} value="Add Ingredient" />
           <input type="submit" disabled={this.state.formHasError()} className="btn btn-dark btn-sm m-1" value="Save Recipe" />
         </div>
@@ -243,7 +252,7 @@ const mapDispatchToProps = (dispatch:any) =>{
     saveRecipe: (recipeData:any) => {
 
         dispatch({type: API, payload:{
-          url:'/saverecipe',
+          url:'/addRecipe',
           method:'POST',
           data:{...recipeData},
           accessToken:'',
