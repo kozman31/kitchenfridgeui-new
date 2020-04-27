@@ -1,5 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+Front end for web service to search for and save recipes.
+
 ## Available Scripts
 
 In the project directory, you can run:
