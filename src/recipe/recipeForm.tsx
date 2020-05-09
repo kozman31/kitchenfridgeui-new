@@ -100,7 +100,7 @@ class RecipeForm extends React.Component<Props,{}>  {
     deleteIngredient:(event:MouseEvent<MouseEvent & HTMLInputElement>, index: number)=>this.deleteIngredient(event, index),
     updateIngredient:(event:FormEvent<FormControl & HTMLInputElement>, index: number)=>this.updateIngredient(event, index),
     formHasError: ()=>{
-      return this.state.form.recipeName.hasError || this.state.ingredientList.length==0;
+      return this.state.form.recipeName.hasError || this.state.ingredientList.length===0;
     },
   }
   constructor(props:any){
@@ -175,7 +175,7 @@ class RecipeForm extends React.Component<Props,{}>  {
     updatedState = { ...this.state};
     let ingredientList = updatedState['ingredientList'];
     ingredientList.splice(index, 1);
-    if(ingredientList.length==0)
+    if(ingredientList.length===0)
       this.addIngredient(event);
     this.setState({ingredientList:ingredientList});
   }
@@ -214,7 +214,7 @@ class RecipeForm extends React.Component<Props,{}>  {
     let formElement = <form name="registrationForm" onSubmit={this.handleSubmit}>
                 <div className="row">
         { formArray.map((el)=>{
-          if( el.key == 'instructions' || el.key == 'description' )
+          if( el.key === 'instructions' || el.key === 'description' )
             return <Row key={el.key} className="col-12">
                     <Col className="justify-content-md-center col-11">
                       <FormInput elementType={el.elementType} onChange={this.state.onChange} hasError={el.hasError} errorMsg={el.errorMsg} touched={el.touched} elementConfig={el.elementConfig} value={el.value} label={el.label}/>

@@ -65,7 +65,7 @@ const FormInput: React.FC<any> = (props: any) =>{
         }
     }
 
-    if (props.label !=""){
+    if (props.label !==""){
         label = <FormLabel>
                     {requiredIcon}
                     {props.label}
