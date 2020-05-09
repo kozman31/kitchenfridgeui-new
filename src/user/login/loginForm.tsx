@@ -1,4 +1,4 @@
-import React, { FormEvent } from 'react';
+import React, { FormEvent, ChangeEvent } from 'react';
 import { Button, FormControl, Form, Col } from 'react-bootstrap';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -63,8 +63,8 @@ class LoginForm extends React.Component<Props, {}>   {
     return (
       <Col md={{ span: 6, offset: 3 }} className="justify-content-md-center">
          <Form onSubmit={this.loginHandler} name="loginForm">
-            <FormControl type="text" name="username" autoComplete="username" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.loginForm.username.value} placeholder="Username" size="sm" className="mt-2 mb-2" />
-            <FormControl type="password" name="password" autoComplete="current-password" onChange={(event:FormEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.loginForm.password.value} placeholder="Password" size="sm" className="mt-2 mb-2" />
+            <FormControl type="text" name="username" autoComplete="username" onChange={(event:ChangeEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.loginForm.username.value} placeholder="Username" size="sm" className="mt-2 mb-2" />
+            <FormControl type="password" name="password" autoComplete="current-password" onChange={(event:ChangeEvent<FormControl & HTMLInputElement>)=>this.changeHandler(event)} value={this.state.loginForm.password.value} placeholder="Password" size="sm" className="mt-2 mb-2" />
             <Button variant="dark" type="submit" size="sm" className="ml-auto mr-auto">Login</Button>
         </Form>
         <div><Link to='register' className="pt-0 pb-o"><small>Sign Up</small></Link></div>
